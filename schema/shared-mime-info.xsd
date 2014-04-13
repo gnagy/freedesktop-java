@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.freedesktop.org/standards/shared-mime-info" xmlns:s="http://www.freedesktop.org/standards/shared-mime-info" >
+<xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+
+  <xs:element name="mime-info">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="s:mime-type"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mime-type">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="s:comment"/>
+        <xs:sequence minOccurs="0">
+          <xs:element ref="s:acronym"/>
+          <xs:element ref="s:expanded-acronym"/>
+        </xs:sequence>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element minOccurs="0" ref="s:generic-icon"/>
+          <xs:element ref="s:glob"/>
+          <xs:element ref="s:magic"/>
+          <xs:element ref="s:treemagic"/>
+          <xs:element ref="s:root-XML"/>
+          <xs:element ref="s:alias"/>
+          <xs:element ref="s:sub-class-of"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="type" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <!-- a comment describing a document with the respective MIME type. Example: "WMV video" -->
+  <xs:element name="comment">
+    <xs:complexType mixed="true">
+      <xs:attribute ref="xml:lang"/>
+    </xs:complexType>
+  </xs:element>
+  <!-- a comment describing the respective unexpanded MIME type acronym. Example: "WMV" -->
+  <xs:element name="acronym">
+    <xs:complexType mixed="true">
+      <xs:attribute ref="xml:lang"/>
+    </xs:complexType>
+  </xs:element>
+  <!-- a comment describing the respective expanded MIME type acronym. Example: "Windows Media Video" -->
+  <xs:element name="expanded-acronym">
+    <xs:complexType mixed="true">
+      <xs:attribute ref="xml:lang"/>
+    </xs:complexType>
+  </xs:element>
+  <!--
+    a generic icon name as per the Icon Naming Specification, only required if computing
+    it from the mime-type would not work, See "generic-icon" in the Shared Mime Specification
+  -->
+  <xs:element name="generic-icon">
+    <xs:complexType mixed="true">
+      <xs:attribute name="name">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="application-x-executable"/>
+            <xs:enumeration value="audio-x-generic"/>
+            <xs:enumeration value="font-x-generic"/>
+            <xs:enumeration value="image-x-generic"/>
+            <xs:enumeration value="package-x-generic"/>
+            <xs:enumeration value="text-html"/>
+            <xs:enumeration value="text-x-generic"/>
+            <xs:enumeration value="text-x-generic-template"/>
+            <xs:enumeration value="text-x-script"/>
+            <xs:enumeration value="video-x-generic"/>
+            <xs:enumeration value="x-office-address-book"/>
+            <xs:enumeration value="x-office-calendar"/>
+            <xs:enumeration value="x-office-document"/>
+            <xs:enumeration value="x-office-presentation"/>
+            <xs:enumeration value="x-office-spreadsheet"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="glob">
+    <xs:complexType>
+      <xs:attribute name="pattern" use="required"/>
+      <xs:attribute name="weight"/>
+      <xs:attribute name="case-sensitive"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="magic">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="s:match"/>
+      </xs:sequence>
+      <xs:attribute name="priority"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="match">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="s:match"/>
+      </xs:sequence>
+      <xs:attribute name="offset" use="required"/>
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="string"/>
+            <xs:enumeration value="big16"/>
+            <xs:enumeration value="big32"/>
+            <xs:enumeration value="little16"/>
+            <xs:enumeration value="little32"/>
+            <xs:enumeration value="host16"/>
+            <xs:enumeration value="host32"/>
+            <xs:enumeration value="byte"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="value" use="required"/>
+      <xs:attribute name="mask"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="treemagic">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="s:treematch"/>
+      </xs:sequence>
+      <xs:attribute name="priority"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="treematch">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="s:treematch"/>
+      </xs:sequence>
+      <xs:attribute name="path" use="required"/>
+      <xs:attribute name="type">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="file"/>
+            <xs:enumeration value="directory"/>
+            <xs:enumeration value="link"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="match-case">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="true"/>
+            <xs:enumeration value="false"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="executable">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="true"/>
+            <xs:enumeration value="false"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="non-empty">
+        <xs:simpleType>
+          <xs:restriction base="xs:token">
+            <xs:enumeration value="true"/>
+            <xs:enumeration value="false"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute name="mimetype"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="root-XML">
+    <xs:complexType>
+      <xs:attribute name="namespaceURI" use="required"/>
+      <xs:attribute name="localName" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="alias">
+    <xs:complexType>
+      <xs:attribute name="type" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="sub-class-of">
+    <xs:complexType>
+      <xs:attribute name="type" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
